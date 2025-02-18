@@ -1,0 +1,15 @@
+[workspace]
+
+members = ["controller", "client"]
+resolver = "2"
+
+[workspace.package]
+version = "0.1.0"
+authors = ["Wataru Matsui <watawuwu@3bi.tech>"]
+readme = "README.md"
+edition = "2021"
+license = "MIT OR Apache-2.0"
+description = ""
+repository = "https://github.com/watawuwu/hb"
+keywords = [""]
+categories = ["command-line-utilities"]
