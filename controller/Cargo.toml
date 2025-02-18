@@ -1,0 +1,48 @@
+[package]
+name = "hb-controller"
+version.workspace = true
+authors.workspace = true
+readme.workspace = true
+edition.workspace = true
+license.workspace = true
+description.workspace = true
+repository.workspace = true
+keywords.workspace = true
+categories.workspace = true
+
+[dependencies]
+futures = "0.3"
+anyhow = "1"
+log = "0"
+pretty_env_logger = "0"
+clap = { version = "4", features = ["derive", "env"] }
+kube = { version = "0", features = [
+    "derive",
+    "runtime",
+    "config",
+    "unstable-runtime",
+] }
+k8s-openapi = { version = "0.24", default-features = false, features = [
+    "v1_31",
+] }
+serde = { version = "1", features = ["derive"] }
+tokio = { version = "1", features = ["full"] }
+serde_json = "1"
+serde_yml = "0"
+schemars = { version = "0.8", features = ["derive_json_schema"] }
+time = { version = "0.3", features = ["serde", "serde-human-readable"] }
+thiserror = "2"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["json", "env-filter"] }
+tracing-serde = "0.2"
+opentelemetry = "0.28"
+opentelemetry_sdk = { version = "0.28", features = ["rt-tokio"] }
+opentelemetry-otlp = "0.28"
+
+# [[bin]]
+# name = "crdgen"
+# path = "src/bin/crdgen.rs"
+
+# [[bin]]
+# name = "hb-controller"
+# path = "src/bin/controller.rs"
