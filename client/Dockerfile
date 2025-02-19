@@ -2,16 +2,9 @@ FROM rust AS builder
 
 WORKDIR /app
 
-ADD Cargo.toml .
-ADD Cargo.lock .
-
-RUN mkdir src && \
-    echo 'fn main(){}' >  src/main.rs && \
-    cargo fetch
-
 COPY . .
 
-RUN cargo build --release
+RUN cargo build --release --bin hb
 
 FROM gcr.io/distroless/cc
 
