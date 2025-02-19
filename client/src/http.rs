@@ -1,6 +1,7 @@
 use anyhow::Result;
 use clap::ValueEnum;
 use prometheus_client::encoding::EncodeLabelValue;
+use reqwest::header::{HeaderMap, HeaderName, HeaderValue};
 use std::collections::HashMap;
 use std::net::{IpAddr, SocketAddr};
 use std::path::PathBuf;
@@ -33,9 +34,21 @@ impl Client {
     pub(crate) fn try_new(req: Request) -> Result<Self> {
         let mut builder = reqwest::Client::builder()
             .timeout(req.timeout)
+            .user_agent(format!("hb-client/{}", env!("CARGO_PKG_VERSION")))
             .danger_accept_invalid_certs(req.insecure)
             .use_rustls_tls()
             .tls_built_in_root_certs(true);
+
+        let mut headers = HeaderMap::new();
+        headers.insert(
+            HeaderName::from_static("x-tool-name"),
+            HeaderValue::from_static("hb-client"),
+        );
+        headers.insert(
+            HeaderName::from_static("x-tool-version"),
+            HeaderValue::from_static(env!("CARGO_PKG_VERSION")),
+        );
+        builder = builder.default_headers(headers);
 
         if let (Some(ip), Some(domain)) = (req.resolve, req.url.domain()) {
             let socket = match req.url.port() {
@@ -324,6 +337,41 @@ mod tests {
         // header size ( "connection": "close", "content-type": "text/plain", "content-length": "9", "date": "Sun, 16 Feb 2025 04:33:05 GMT") + body size ("test data")
         assert_eq!(size, 86);
         mock.assert_async().await;
+        Ok(())
+    }
+
+    #[tokio::test]
+    async fn test_client_builder_headers() -> Result<()> {
+        let mut server = Server::new_async().await;
+        let mock = server
+            .mock("GET", "/")
+            .match_header("x-tool-name", "hb-client")
+            .match_header("x-tool-version", env!("CARGO_PKG_VERSION"))
+            .with_status(200)
+            .create_async()
+            .await;
+
+        let request = Request {
+            http_version: HttpVersion::Http11,
+            url: url::Url::parse(&server.url())?,
+            method: Method::Get,
+            headers: HashMap::new(),
+            timeout: Duration::from_secs(30),
+            body: Vec::new(),
+            basic_auth: None,
+            insecure: false,
+            disable_keepalive: false,
+            root_cert: None,
+            resolve: None,
+        };
+
+        let client = Client::try_new(request)?;
+        let (status, _) = client.request().await?;
+
+        assert_eq!(status, 200);
+
+        mock.assert_async().await;
+
         Ok(())
     }
 }
