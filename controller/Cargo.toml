@@ -9,6 +9,9 @@ description.workspace = true
 repository.workspace = true
 keywords.workspace = true
 categories.workspace = true
+homepage.workspace = true
+# TODO: Enable publish after the controller is ready
+publish = false
 
 [dependencies]
 futures = "0.3"
