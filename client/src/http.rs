@@ -86,7 +86,7 @@ impl Client {
             builder = builder.header(key, value);
         }
 
-        if req.disable_keepalive {
+        if req.disable_keepalive && req.http_version == HttpVersion::Http11 {
             builder = builder.header("Connection", "close");
         }
 
