@@ -9,9 +9,15 @@ authors = ["Wataru Matsui <watawuwu@3bi.tech>"]
 readme = "README.md"
 edition = "2021"
 license = "MIT OR Apache-2.0"
-description = ""
+description = "HTTP Benchmark Tool"
 repository = "https://github.com/watawuwu/hb"
-keywords = [""]
+keywords = [
+    "http",
+    "benchmark",
+    "command-line-utilities",
+    "load-testing",
+    "stress-testing",
+]
 categories = ["command-line-utilities"]
 homepage = "https://github.com/watawuwu/hb"
 
