@@ -15,3 +15,7 @@ keywords = [""]
 categories = ["command-line-utilities"]
 homepage = "https://github.com/watawuwu/hb"
 
+# The profile that 'dist' will build with
+[profile.dist]
+inherits = "release"
+lto = "thin"
