@@ -4,7 +4,6 @@ members = ["controller", "client"]
 resolver = "2"
 
 [workspace.package]
-version = "0.1.0"
 authors = ["Wataru Matsui <watawuwu@3bi.tech>"]
 readme = "README.md"
 edition = "2021"
