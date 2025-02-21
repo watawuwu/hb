@@ -12,16 +12,17 @@ categories.workspace = true
 homepage.workspace = true
 
 [dependencies]
+reqwest = { version = "0", default-features = false, features = [
+    "charset",
+    "http2",
+    "macos-system-configuration",
+    "json",
+    "rustls-tls",
+] }
 chrono = { version = "0.4", features = ["serde"] }
 anyhow = "1"
 log = "0"
 clap = { version = "4", features = ["derive", "env"] }
-reqwest = { version = "0", features = [
-    "blocking",
-    "json",
-    "http2",
-    "rustls-tls",
-] }
 url = "2"
 strum = { version = "0", features = ["derive"] }
 tokio = { version = "1", features = ["full"] }
