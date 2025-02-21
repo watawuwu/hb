@@ -62,7 +62,7 @@ jobs:
       uses: docker/build-push-action@v6
       with:
         context: .
-        platforms: ${{ eq(github.ref, 'refs/tags/v*.*.*') && "linux/amd64,linux/arm64" || "linux/amd64" }}
+        platforms: ${{ startsWith(github.ref, 'refs/tags/v*.*.*') && 'linux/amd64,linux/arm64' || 'linux/amd64' }}
         push: true
         tags: ${{ steps.meta.outputs.tags }}
         cache-from: type=local,src=/tmp/.buildx-cache
