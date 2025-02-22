@@ -29,13 +29,6 @@ lto = "thin"
 # disable publishing to crates.io
 # hb name is reserved for the other owner
 publish = false
-pre-release-hook = [
-    "git",
-    "cliff",
-    # Creating changelog from unreleased data before tag creation
-    "--unreleased",
-    "--tag",
-    "{{tag_name}}",
-    "--prepend",
-    "CHANGELOG.md",
-]
+
+# pwd is workspace root
+pre-release-hook = ["../scripts/pre-release-hook.sh", "{{tag_name}}"]
