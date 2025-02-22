@@ -7,4 +7,5 @@ if [[ -z "$tag_name" ]]; then
     exit 1
 fi
 
+# Ref: https://github.com/crate-ci/cargo-release/blob/master/docs/reference.md#hook-environment-variables
 git -C $WORKSPACE_ROOT cliff --unreleased --tag $tag_name --prepend $CRATE_ROOT/CHANGELOG.md
