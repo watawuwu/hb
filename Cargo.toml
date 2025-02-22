@@ -24,3 +24,8 @@ homepage = "https://github.com/watawuwu/hb"
 [profile.dist]
 inherits = "release"
 lto = "thin"
+
+[workspace.metadata.release]
+# disable publishing to crates.io
+# hb name is reserved for the other owner
+publish = false
