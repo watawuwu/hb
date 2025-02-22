@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [hb-v0.6.1] - 2025-02-22
+
+### ⚙️ Miscellaneous Tasks
+
+- Update container workflow tag trigger and versioning
+
 ## [hb-v0.6.0] - 2025-02-22
 
 ### 🐛 Bug Fixes
