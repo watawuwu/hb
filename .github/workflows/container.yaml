@@ -5,7 +5,7 @@ on:
     branches:
     - main
     tags:
-    - 'hb-v*.*.*'
+    - '**'
 
 env:
   NAME: hb
@@ -41,8 +41,8 @@ jobs:
           ghcr.io/${{ github.actor }}/${{ env.NAME }}
         tags: |
           type=raw,value=latest,enable={{is_default_branch}}
-          type=semver,pattern={{version}}
-          type=semver,pattern={{major}}.{{minor}}
+          type=semver,pattern={{version}},prefix=${{ env.NAME }}-
+          type=semver,pattern={{major}}.{{minor}},prefix=${{ env.NAME }}-
 
     - name: Setup QEMU
       uses: docker/setup-qemu-action@v3
