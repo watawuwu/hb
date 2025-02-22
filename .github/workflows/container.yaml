@@ -5,7 +5,7 @@ on:
     branches:
     - main
     tags:
-    - 'v*.*.*'
+    - 'hb-v*.*.*'
 
 env:
   NAME: hb
