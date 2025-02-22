@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [hb-v0.5.0] - 2025-02-22
+
+### 📚 Documentation
+
+- Move CHANGELOG.md for client
+
 ## [hb-v0.4.0] - 2025-02-21
 
 ### 🚜 Refactor
