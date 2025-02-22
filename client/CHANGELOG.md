@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
+## [hb-v0.6.0] - 2025-02-22
+
+### 🐛 Bug Fixes
+
+- Update git-cliff pre-release hook for multi-project changelog generation
+
+### 📚 Documentation
+
+- Add reference link for git-cliff pre-release hook environment variables
+
+### ⚙️ Miscellaneous Tasks
+
+- Configure git-cliff changelog generation settings
+- Fix container workflow tag trigger pattern
+
 ## [hb-v0.5.0] - 2025-02-22
 
 ### 📚 Documentation
