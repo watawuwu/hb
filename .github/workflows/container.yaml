@@ -41,8 +41,9 @@ jobs:
           ghcr.io/${{ github.actor }}/${{ env.NAME }}
         tags: |
           type=raw,value=latest,enable={{is_default_branch}}
-          type=semver,pattern={{version}},prefix=${{ env.NAME }}-
-          type=semver,pattern={{major}}.{{minor}},prefix=${{ env.NAME }}-
+          type=match,pattern=${{ env.NAME }}-v(\d.\d.\d),group=1
+          type=match,pattern=${{ env.NAME }}-v(\d.\d),group=1
+          type=match,pattern=${{ env.NAME }}-v(\d),group=1
 
     - name: Setup QEMU
       uses: docker/setup-qemu-action@v3
