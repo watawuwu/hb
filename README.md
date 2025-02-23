@@ -146,6 +146,19 @@ $ brew install watawuwu/tap/hb
 $ curl --proto '=https' --tlsv1.2 -LsSf https://github.com/watawuwu/hb/releases/download/hb-$version/hb-installer.sh | sh
 ```
 
+#### Container
+
+You can use the container by pulling the image from GitHub Container Registry.
+Supported architectures are linux/amd64 and linux/arm64.
+
+[ghcr.io/watawuwu/hb](https://github.com/watawuwu/hb/pkgs/container/hb)
+
+You can also use the container by running the following command.
+
+```
+$ docker run -it ghcr.io/watawuwu/hb:latest --help
+```
+
 ### Dashboard (Under Development)
 
 A dashboard to visualize the results of the HTTP benchmark is planned to be implemented.
