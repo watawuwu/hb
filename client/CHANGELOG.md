@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file.
 
+## [hb-v0.6.3] - 2025-02-23
+
+### 🐛 Bug Fixes
+
+- OTLP metric units by removing redundant suffixes
+
+### 📚 Documentation
+
+- Update README with installation methods and project roadmap
+- Add container usage instructions to README
+- Update dashboard section with OTLP and visualization details
+
+### ⚙️ Miscellaneous Tasks
+
+- Add multi-arch support for container builds
+
 ## [hb-v0.6.2] - 2025-02-22
 
 ### ⚙️ Miscellaneous Tasks
