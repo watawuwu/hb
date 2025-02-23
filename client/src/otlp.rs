@@ -200,7 +200,7 @@ fn create_metrics(req: &Request) -> Metrics {
         .build();
 
     let duration_seconds = global::meter_with_scope(scope.clone())
-        .f64_histogram("http_client_request_duration_seconds")
+        .f64_histogram("http_client_request_duration")
         .with_boundaries(vec![
             0.001, 0.005, 0.01, 0.025, 0.05, 0.07, 0.1, 0.25, 0.5, 1.0, 5.0, 10.0,
         ])
@@ -209,12 +209,12 @@ fn create_metrics(req: &Request) -> Metrics {
         .build();
 
     let error_total = global::meter_with_scope(scope.clone())
-        .u64_counter("http_client_errors_total")
+        .u64_counter("http_client_errors")
         .with_description("Total number of HTTP client errors.")
         .build();
 
     let response_size_bytes = global::meter_with_scope(scope.clone())
-        .u64_histogram("http_client_response_size_bytes")
+        .u64_histogram("http_client_response_size")
         .with_boundaries(vec![0.0, 100.0, 1024.0, 1024.0 * 100.0, 1024.0 * 1024.0])
         .with_description("Histogram of response sizes for HTTP client requests.")
         .with_unit("bytes")

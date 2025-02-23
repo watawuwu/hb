@@ -44,7 +44,7 @@ pub struct RequestDurationSecondsMetrics {
 }
 
 impl RequestDurationSecondsMetrics {
-    const NAME: &'static str = "http_client_request_duration_seconds";
+    const NAME: &'static str = "http_client_request_duration";
 
     pub(crate) fn try_find(
         meter: &ResourceMetrics,
@@ -219,7 +219,7 @@ pub struct ResponseSizeBytesMetrics {
 }
 
 impl ResponseSizeBytesMetrics {
-    const NAME: &'static str = "http_client_response_size_bytes";
+    const NAME: &'static str = "http_client_response_size";
 
     pub(crate) fn find(meter: &ResourceMetrics) -> Option<Self> {
         let hist = find_metrcis::<Histogram<u64>>(meter, Self::NAME)?;
@@ -253,7 +253,7 @@ pub struct ErrorMetrics {
 }
 
 impl ErrorMetrics {
-    const NAME: &'static str = "http_client_errors_total";
+    const NAME: &'static str = "http_client_errors";
 
     pub(crate) fn find(meter: &ResourceMetrics) -> Option<Self> {
         let hist = find_metrcis::<Sum<u64>>(meter, Self::NAME)?;
