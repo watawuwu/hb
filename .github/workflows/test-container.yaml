@@ -125,9 +125,8 @@ jobs:
 
     - name: Push manifest
       run: |
-        repo=ghcr.io/${{ github.actor }}/${{ env.NAME }}
         while read -r tag; do
           echo "Pushing manifest for ${tag}"
-          echo "docker buildx imagetools create --tag $repo:${tag} $repo:${tag}-amd64 $repo:${tag}-arm64"
-          docker buildx imagetools create --tag $repo:${tag} $repo:${tag}-amd64 $repo:${tag}-arm64
+          echo "docker buildx imagetools create --tag ${tag} ${tag}-amd64 ${tag}-arm64"
+          docker buildx imagetools create --tag ${tag} ${tag}-amd64 ${tag}-arm64
         done <<< "${{ needs.build-push.outputs.tags }}"
