@@ -128,6 +128,30 @@ Options:
           Print version
 ```
 
+#### Installing
+
+Releases are available at https://github.com/watawuwu/hb/releases/latest .
+
+You can install binaries by downloading the release and placing it on your PATH, or else you can use cargo, brew, or shell scripts to install it.
+
+```
+$ cargo install --git https://github.com/watawuwu/hb.git hb
+```
+
+```
+$ brew install watawuwu/tap/hb
+```
+
+```
+$ curl --proto '=https' --tlsv1.2 -LsSf https://github.com/watawuwu/hb/releases/download/hb-$version/hb-installer.sh | sh
+```
+
+### Dashboard (Under Development)
+
+A dashboard to visualize the results of the HTTP benchmark is planned to be implemented.
+
+![dashboard](./docs/dashboard.png)
+
 ### Controller (Under Design)
 
 A custom controller to manage the following custom resource is planned to be implemented using kube-rs.
@@ -145,18 +169,6 @@ spec:
 ```
 
 We plan to focus on improving report visibility and adjusting the start time during parallel execution, comparing only plain job.
-
-### Dashboard (Under Development)
-
-A dashboard to visualize the results of the HTTP benchmark is planned to be implemented.
-
-![dashboard](./docs/dashboard.png)
-
-## Installing
-
-```
-$ brew install watawuwu/tap/hb
-```
 
 ## Contributing
 
