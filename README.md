@@ -161,14 +161,7 @@ $ docker run -it ghcr.io/watawuwu/hb:latest --help
 
 ### Dashboard (Under Development)
 
-hb supports OTLP, so data can be stored using any cloud service or OSS product.
-For data visualization, you can also use Grafana or Perses, so if you already have a visualization environment, please use the existing visualization tools for reliability reasons.
-
-This repository plans to provide a simple data visualization tool for those who want to check in a local environment or do not have a visualization environment.
-
-Additionally, this visualization tool will use Prometheus for data storage. You can also use your own Prometheus, but to support OTLP, you need to enable OTLP with the experimental flag or use version 3 or higher.
-
-![dashboard](./docs/dashboard.png)
+- [Dashboard](./dashboard/README.md)
 
 ### Controller (Under Design)
 
