@@ -1,0 +1,9 @@
+- kind: GlobalDatasource
+  metadata:
+    name: Prometheus
+  spec:
+    default: true
+    plugin:
+      kind: PrometheusDatasource
+      spec:
+        directUrl: http://localhost:9090

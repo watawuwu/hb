@@ -1,0 +1,33 @@
+services:
+  web:
+    image: nginx:latest
+    ports:
+    - "80:80"
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+    - "9090:9090"
+    volumes:
+    - assets/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+    - --config.file=/etc/prometheus/prometheus.yml
+    - --storage.tsdb.path=/prometheus
+    - --web.enable-lifecycle
+    - --web.enable-otlp-receiver
+    - --web.enable-admin-api
+  otlp-collector:
+    image: otel/opentelemetry-collector-contrib-dev:latest
+    ports:
+    - "4317:4317"
+    - "4318:4318"
+    volumes:
+    - assets/otel/config.yaml:/etc/otel/config.yaml
+  perses:
+    image: persesdev/perses:latest
+    ports:
+    - "8080:8080"
+    volumes:
+    - assets/perses/config.yaml:/etc/perses/config.yaml
+    - assets/perses/data:/var/lib/perses/data
+    command:
+    - --config=/etc/perses/config.yaml

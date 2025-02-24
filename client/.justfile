@@ -85,15 +85,3 @@ watch-test *options:
 
 dev *args:
     cargo run -- -d 60s --otlp-endpoint="http://localhost:9090/api/v1/otlp/v1/metrics" http://localhost:8080/ {{ args }}
-
-mock-otlp:
-    docker run --rm -p 4317:4317 -p 4318:4318 --name mock-otlp -v $(PWD)/assets/otel/config.yaml:/etc/otel/config.yaml:ro otel/opentelemetry-collector-contrib-dev
-
-mock-prometheus:
-    docker run --rm \
-      -p 9090:9090  \
-      -v $(PWD)/assets/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro \
-      --name mock-prometheus \
-      --entrypoint /bin/prometheus \
-      prom/prometheus:v3.0.1 --config.file=/etc/prometheus/prometheus.yml --storage.tsdb.path=/prometheus --web.enable-lifecycle --web.enable-otlp-receiver --web.enable-admin-api
-
