@@ -1,0 +1,114 @@
+kind: Dashboard
+metadata:
+  name: http_request_metrics
+  createdAt: "2025-02-24T08:34:21.589576504Z"
+  updatedAt: "2025-02-24T08:37:35.655548219Z"
+  version: 2
+  project: http_benchmarking_tool
+spec:
+  display:
+    name: HTTP Request Metrics
+  panels:
+    HTTPStatus2xxor3xxTotal:
+      kind: Panel
+      spec:
+        display:
+          name: HTTP Status 2xx or 3xx Total
+        plugin:
+          kind: TimeSeriesChart
+          spec: {}
+        queries:
+        - kind: TimeSeriesQuery
+          spec:
+            plugin:
+              kind: PrometheusTimeSeriesQuery
+              spec:
+                query: sum(http_client_request_duration_seconds_count{"status"=~"2.+|3.+"})
+                minStep: 1s
+    HTTPStatus2xxor3xxTotal-1:
+      kind: Panel
+      spec:
+        display:
+          name: HTTP Status 4xx Total
+        plugin:
+          kind: TimeSeriesChart
+          spec: {}
+        queries:
+        - kind: TimeSeriesQuery
+          spec:
+            plugin:
+              kind: PrometheusTimeSeriesQuery
+              spec:
+                query: sum(http_client_request_duration_seconds_count{"status"=~"4.+"})
+                minStep: 1s
+    HTTPStatus2xxor3xxTotal-2:
+      kind: Panel
+      spec:
+        display:
+          name: HTTP Status 5xx Total
+        plugin:
+          kind: TimeSeriesChart
+          spec: {}
+        queries:
+        - kind: TimeSeriesQuery
+          spec:
+            plugin:
+              kind: PrometheusTimeSeriesQuery
+              spec:
+                query: sum(http_client_request_duration_seconds_count{"status"=~"5.+"})
+                minStep: 1s
+    HTTPStatus2xxor3xxTotal-3:
+      kind: Panel
+      spec:
+        display:
+          name: RPS
+          description: HTTP Request Per Seconds
+        plugin:
+          kind: TimeSeriesChart
+          spec: {}
+        queries:
+        - kind: TimeSeriesQuery
+          spec:
+            plugin:
+              kind: PrometheusTimeSeriesQuery
+              spec:
+                query: sum by (method, path, status) (rate(http_client_request_duration_seconds_count[10s]))
+                seriesNameFormat: '{{method}} {{path}}: {{{status}}'
+                minStep: 1s
+        links: []
+  layouts:
+  - kind: Grid
+    spec:
+      display:
+        title: Panel Group
+        collapse:
+          open: true
+      items:
+      - x: 0
+        "y": 0
+        width: 8
+        height: 6
+        content:
+          $ref: '#/spec/panels/HTTPStatus2xxor3xxTotal'
+      - x: 8
+        "y": 0
+        width: 8
+        height: 6
+        content:
+          $ref: '#/spec/panels/HTTPStatus2xxor3xxTotal-1'
+      - x: 16
+        "y": 0
+        width: 8
+        height: 6
+        content:
+          $ref: '#/spec/panels/HTTPStatus2xxor3xxTotal-2'
+      - x: 0
+        "y": 6
+        width: 24
+        height: 12
+        content:
+          $ref: '#/spec/panels/HTTPStatus2xxor3xxTotal-3'
+  variables: []
+  duration: 15m
+  refreshInterval: 0s
+  datasources: {}

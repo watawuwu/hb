@@ -1,0 +1,10 @@
+services:
+  perses:
+    image: persesdev/perses:latest
+    ports:
+    - "8080:8080"
+    volumes:
+    - ./assets/config.yaml:/etc/perses/config.yaml
+    - ./assets/provisioning:/etc/perses/provisioning
+    command:
+    - --config=/etc/perses/config.yaml

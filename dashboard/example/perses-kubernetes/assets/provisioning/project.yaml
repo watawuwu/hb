@@ -1,0 +1,6 @@
+- kind: Project
+  metadata:
+    name: http_benchmarking_tool
+  spec:
+    display:
+      name: HTTP Benchmarking Tool

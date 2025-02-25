@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hb-project-{{ .Files.Get "assets/provisioning/project.yaml" | sha256sum | trunc 8 }}
+  labels:
+    {{- include "perses.labels" . | nindent 4 }}
+    perses.dev/resource: "true"
+data:
+  project.yaml: |
+{{ .Files.Get "assets/provisioning/project.yaml" | indent 4 }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hb-datasource-{{ .Files.Get "config/provisioning/config.json" | sha256sum | trunc 8 }}
+  labels:
+    {{- include "perses.labels" . | nindent 4 }}
+    perses.dev/resource: "true"
+data:
+  datasource.yaml: |
+{{ .Files.Get "assets/provisioning/datasource.yaml" | indent 4 }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hb-dashboard-{{ .Files.Get "assets/provisioning/dashboard.yaml" | sha256sum | trunc 8 }}
+  labels:
+    {{- include "perses.labels" . | nindent 4 }}
+    perses.dev/resource: "true"
+data:
+  dashboard.yaml: |
+{{ .Files.Get "assets/provisioning/dashboard.yaml" | indent 4 }}
