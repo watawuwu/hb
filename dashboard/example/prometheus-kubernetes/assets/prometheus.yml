@@ -1,15 +1,11 @@
 global:
-  scrape_interval: 15s
-  evaluation_interval: 15s
+  scrape_interval: 10s
+  evaluation_interval: 10s
 
 scrape_configs:
 - job_name: "prometheus"
   static_configs:
   - targets: [ "localhost:9090" ]
-
-storage:
-  tsdb:
-    out_of_order_time_window: 30m
 
 # https://prometheus.io/docs/guides/opentelemetry/
 # yaml-language-server: ignore

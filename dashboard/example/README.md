@@ -16,7 +16,7 @@ $ vi dashboard/example/perses-docker/assets/provisioning/datasource.yaml
 
 ```
 # Start the Perses server
-$ docker compose -f dashboard/example/perses-docker/docker-compose.yml up
+$ docker compose -f dashboard/example/perses-docker/docker-compose.yml up perses
 ```
 
 ## Perses Kubernetes

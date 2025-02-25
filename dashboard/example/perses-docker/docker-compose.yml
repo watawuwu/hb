@@ -8,3 +8,15 @@ services:
     - ./assets/provisioning:/etc/perses/provisioning
     command:
     - --config=/etc/perses/config.yaml
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+    - "9090:9090"
+    volumes:
+    - ./assets/prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+    - --config.file=/etc/prometheus/prometheus.yml
+    - --storage.tsdb.path=/prometheus
+    - --web.enable-lifecycle
+    - --web.enable-otlp-receiver
+    - --web.enable-admin-api
