@@ -95,7 +95,7 @@ jobs:
         tags: ${{ steps.add-meta.outputs.tags }}
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
-        file: Dockerfile
+        file: dashboard/simple/Dockerfile
         labels: ${{ steps.meta.outputs.labels }}
         build-args: |
           APP_NAME=hb
