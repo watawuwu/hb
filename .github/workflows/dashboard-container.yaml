@@ -9,6 +9,7 @@ on:
     - 'hb-dashboard-*'
     paths:
     - 'dashboard/simple/*'
+    - '.github/workflows/dashboard-container.yaml'
 
 env:
   NAME: hb-dashboard
