@@ -1,14 +1,16 @@
-name: Container
+name: Build and Push Dashboard Container
 
 on:
   push:
     branches:
     - main
     tags:
-    - '**'
+    - 'hb-dashboard-*'
+    paths:
+    - 'dashboard/simple/*'
 
 env:
-  NAME: hb
+  NAME: hb-dashboard
 
 permissions:
   contents: read
@@ -21,12 +23,12 @@ jobs:
   build-push:
     strategy:
       matrix:
-        arch: [amd64, arm64]
+        arch: [ amd64, arm64 ]
         include:
-          - arch: amd64
-            runs-on: ubuntu-24.04
-          - arch: arm64
-            runs-on: ubuntu-24.04-arm
+        - arch: amd64
+          runs-on: ubuntu-24.04
+        - arch: arm64
+          runs-on: ubuntu-24.04-arm
 
     runs-on: ${{ matrix.runs-on }}
 
@@ -85,13 +87,13 @@ jobs:
       id: push
       uses: docker/build-push-action@v6
       with:
-        context: .
+        context: dashboard/simple
         platforms: linux/${{ matrix.arch }}
         push: true
         tags: ${{ steps.add-meta.outputs.tags }}
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
-        file: client/Dockerfile
+        file: Dockerfile
         labels: ${{ steps.meta.outputs.labels }}
         build-args: |
           APP_NAME=hb
