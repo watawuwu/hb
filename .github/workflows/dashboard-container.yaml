@@ -55,7 +55,7 @@ jobs:
         images: |
           ghcr.io/${{ github.actor }}/${{ env.NAME }}
         tags: |
-          type=raw,value=latest,enable={{is_default_branch}}
+          type=raw,value=latest
           type=match,pattern=${{ env.NAME }}-v(\d.\d.\d),group=1
           type=match,pattern=${{ env.NAME }}-v(\d.\d),group=1
           type=match,pattern=${{ env.NAME }}-v(\d),group=1
