@@ -22,7 +22,7 @@ npm install
 npm run build
 EOF
 
-FROM openresty/openresty
+FROM openresty/openresty:bullseye
 
 COPY --from=builder /app/dist /usr/local/openresty/nginx/html
 
