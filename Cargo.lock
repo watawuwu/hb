@@ -593,6 +593,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "devops"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "http-body-util",
+ "hyper",
+ "hyper-util",
+ "rand 0.9.0",
+ "rand_chacha 0.9.0",
+ "tokio",
+]
+
+[[package]]
 name = "digest"
 version = "0.10.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -944,9 +957,6 @@ dependencies = [
  "console-subscriber",
  "crossterm",
  "futures",
- "http-body-util",
- "hyper",
- "hyper-util",
  "itertools",
  "log",
  "mockito",
@@ -956,8 +966,6 @@ dependencies = [
  "opentelemetry_sdk",
  "pin-project-lite",
  "prometheus-client",
- "rand 0.9.0",
- "rand_chacha 0.9.0",
  "regex",
  "reqwest",
  "serde",

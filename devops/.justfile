@@ -9,3 +9,6 @@ create-cluster:
 
 delete-cluster:
     kind delete cluster --name=perses-dev
+
+http-server:
+    cargo run --release --bin test-server
