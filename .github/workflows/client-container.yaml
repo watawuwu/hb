@@ -1,4 +1,4 @@
-name: Build and Push HB Container
+name: Build and Push Client Container
 
 on:
   push:
