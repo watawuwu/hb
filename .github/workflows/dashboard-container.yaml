@@ -1,14 +1,17 @@
-name: Container
+name: Build and Push Dashboard Container
 
 on:
   push:
     branches:
     - main
     tags:
-    - '**'
+    - 'hb-dashboard-*'
+    paths:
+    - 'dashboard/simple/*'
+    - '.github/workflows/dashboard-container.yaml'
 
 env:
-  NAME: hb
+  NAME: hb-dashboard
 
 permissions:
   contents: read
@@ -21,12 +24,12 @@ jobs:
   build-push:
     strategy:
       matrix:
-        arch: [amd64, arm64]
+        arch: [ amd64, arm64 ]
         include:
-          - arch: amd64
-            runs-on: ubuntu-24.04
-          - arch: arm64
-            runs-on: ubuntu-24.04-arm
+        - arch: amd64
+          runs-on: ubuntu-24.04
+        - arch: arm64
+          runs-on: ubuntu-24.04-arm
 
     runs-on: ${{ matrix.runs-on }}
 
@@ -52,7 +55,7 @@ jobs:
         images: |
           ghcr.io/${{ github.actor }}/${{ env.NAME }}
         tags: |
-          type=raw,value=latest,enable={{is_default_branch}}
+          type=raw,value=latest
           type=match,pattern=${{ env.NAME }}-v(\d.\d.\d),group=1
           type=match,pattern=${{ env.NAME }}-v(\d.\d),group=1
           type=match,pattern=${{ env.NAME }}-v(\d),group=1
@@ -85,13 +88,13 @@ jobs:
       id: push
       uses: docker/build-push-action@v6
       with:
-        context: .
+        context: dashboard/simple
         platforms: linux/${{ matrix.arch }}
         push: true
         tags: ${{ steps.add-meta.outputs.tags }}
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
-        file: client/Dockerfile
+        file: dashboard/simple/Dockerfile
         labels: ${{ steps.meta.outputs.labels }}
         build-args: |
           APP_NAME=hb
