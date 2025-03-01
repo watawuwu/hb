@@ -96,7 +96,7 @@ jobs:
         file: client/Dockerfile
         labels: ${{ steps.meta.outputs.labels }}
         build-args: |
-          APP_NAME=hb
+          APP_NAME=${{ env.NAME }}
 
     - name: Update caches
       run: |
