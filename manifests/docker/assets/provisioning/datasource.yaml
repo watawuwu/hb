@@ -9,5 +9,4 @@
         proxy:
           kind: HTTPProxy
           spec:
-            # TODO: change to the correct host
             url: http://prometheus:9090

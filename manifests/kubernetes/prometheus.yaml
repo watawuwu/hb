@@ -3,22 +3,22 @@ kind: StatefulSet
 metadata:
   name: prometheus
   labels:
-    app: prometheus
+    app.kubernetes.io/name: prometheus
 spec:
   serviceName: prometheus
   replicas: 1
   selector:
     matchLabels:
-      app: prometheus
+      app.kubernetes.io/name: prometheus
   template:
     metadata:
       labels:
-        app: prometheus
+        app.kubernetes.io/name: prometheus
     spec:
       volumes:
       - name: config
         configMap:
-          name: config
+          name: prometheus-config
       containers:
       - name: prometheus
         image: prom/prometheus:latest
@@ -31,3 +31,19 @@ spec:
         - --web.enable-lifecycle
         - --web.enable-otlp-receiver
         - --web.enable-admin-api
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: prometheus
+  labels:
+    app.kubernetes.io/name: prometheus
+spec:
+  type: ClusterIP
+  ports:
+  - name: http
+    port: 9090
+    protocol: TCP
+    targetPort: 9090
+  selector:
+    app.kubernetes.io/name: prometheus

@@ -1,0 +1,120 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: perses
+  labels:
+    app.kubernetes.io/name: perses
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: perses-clusterrole
+  labels:
+    app.kubernetes.io/name: perses
+rules:
+- apiGroups: [ "" ]
+  resources: [ "configmaps" ]
+  verbs: [ "get", "watch", "list" ]
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: perses-clusterrolebinding
+roleRef:
+  kind: ClusterRole
+  name: perses-clusterrole
+  apiGroup: rbac.authorization.k8s.io
+subjects:
+- kind: ServiceAccount
+  name: perses
+  # override kustomize namespace
+  #namespace: ""
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: perses
+  labels:
+    app.kubernetes.io/name: perses
+spec:
+  type: ClusterIP
+  ports:
+  - name: http
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app.kubernetes.io/name: perses
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: perses
+  labels:
+    app.kubernetes.io/name: perses
+spec:
+  replicas: 1
+  serviceName: perses-headless
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: perses
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: perses
+    spec:
+      serviceAccountName: perses
+      securityContext:
+        fsGroup: 2000
+      containers:
+      - name: perses-provisioning-sidecar
+        image: "kiwigrid/k8s-sidecar:1.30.0"
+        volumeMounts:
+        - name: provisioning
+          mountPath: /etc/perses/provisioning
+        env:
+        - name: LABEL
+          value: perses.dev/resource
+        - name: LABEL_VALUE
+          value: "true"
+        - name: FOLDER
+          value: /etc/perses/provisioning
+      - name: perses
+        image: persesdev/perses:latest
+        imagePullPolicy: IfNotPresent
+        args:
+        - --config=/etc/perses/config/config.yaml
+        - --web.listen-address=:8080
+        - --web.hide-port=false
+        - --web.telemetry-path=/metrics
+        - --log.level=info
+        - --log.method-trace=true
+        volumeMounts:
+        - name: config
+          mountPath: "/etc/perses/config"
+        - name: data
+          mountPath: /perses
+        - name: provisioning
+          mountPath: /etc/perses/provisioning
+        ports:
+        - name: http
+          containerPort: 8080
+        readinessProbe:
+          httpGet:
+            path: /metrics
+            port: http
+            scheme: HTTP
+        livenessProbe:
+          httpGet:
+            path: /metrics
+            port: http
+            scheme: HTTP
+          initialDelaySeconds: 10
+      volumes:
+      - name: data
+        emptyDir: {}
+      - name: config
+        configMap:
+          name: perses-config
+      - name: provisioning
+        emptyDir: {}
