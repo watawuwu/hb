@@ -1,21 +1,39 @@
 <script lang="ts">
-  import { query, type DataItem } from "../prometheus";
-  import { onMount } from "svelte";
+  import { query as promQuery, type DataItem } from "../prometheus";
+  import { onMount, onDestroy } from "svelte";
 
-  const prometheusUrl =
-    (window as any).APP_CONFIG?.PROMETHEUS_URL || "http://localhost:9090";
+  export let title: string;
+  export let query: string;
+  export let dataSource: { url: string; interval: number };
 
-  export let prometheusQuery: string;
-
-  let data: DataItem;
+  let value: number;
   let error: string;
+  let intervalId: number;
+
+  $: {
+    if (dataSource.interval != null && dataSource.interval > 0) {
+      console.log("reactive  dataSource.interval", dataSource.interval);
+      console.log("reactive intervalId", intervalId);
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+      intervalId = setInterval(fetchData, dataSource.interval);
+    }
+  }
 
   async function fetchData() {
     try {
-      // Get the Prometheus URL from the environment variable
-      const items = await query(prometheusQuery, prometheusUrl);
+      if (
+        dataSource.url === "" ||
+        dataSource.interval == null ||
+        dataSource.interval === 0
+      ) {
+        return;
+      }
+      const items = await promQuery(query, dataSource.url);
       if (items !== undefined && items.length > 0) {
-        data = items[0];
+        const data = items[0];
+        value = data.sample[1];
       }
     } catch (err) {
       if (err instanceof Error) {
@@ -26,18 +44,20 @@
     }
   }
 
-  // Fetch data every 10 seconds
-  onMount(() => {
-    fetchData();
-    const interval = setInterval(fetchData, 300);
-    return () => clearInterval(interval);
+  onDestroy(() => {
+    if (intervalId) {
+      clearInterval(intervalId);
+    }
   });
 </script>
 
-{#if error}
-  {error}
-{:else if data}
-  {data.sample[1]}
-{:else}
-  Loading...
-{/if}
+<p class="text-xs tracking-wide text-gray-500">{title}</p>
+<h3 class="text-xl sm:text-2xl font-medium text-gray-800">
+  {#if error}
+    {error}
+  {:else if value}
+    {value}
+  {:else}
+    Loading...
+  {/if}
+</h3>

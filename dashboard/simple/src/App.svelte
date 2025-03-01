@@ -2,15 +2,35 @@
   import EchartsLineChart from "./lib/components/EchartsLineChart.svelte";
   import TotalCount from "./lib/components/TotalCount.svelte";
   import Header from "./lib/components/Header.svelte";
-  import Sidebar from "./lib/components/Sidebar.svelte";
 
-  // Variable to control the display/hide of the chart
-  let showChart = true;
-
-  // Toggle function
-  function toggleChart() {
-    showChart = !showChart;
+  let dataSource = {
+    url: "",
+    interval: 500,
+  };
+  function handleSubmit(data: { url: string; interval: number }) {
+    dataSource = {
+      url: data.url,
+      interval: data.interval,
+    };
   }
+
+  // Get URL query parameters
+  function getParams() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const intervalSec = parseFloat(urlParams.get("interval"));
+    const interval = isNaN(intervalSec)
+      ? dataSource.interval
+      : intervalSec * 1000;
+
+    dataSource = {
+      url: urlParams.get("url") || dataSource.url,
+      interval,
+    };
+  }
+
+  // Update when URL is changed
+  window.addEventListener("popstate", getParams);
+  getParams();
 
   let query200 =
     'sum(http_client_request_duration_seconds_count{"status"=~"2.+|3.+"})';
@@ -21,60 +41,41 @@
 </script>
 
 <main class="bg-gray-50">
-  <Header />
-  <Sidebar />
-
-  <div class="grid grid-cols-6 gap-4 p-20">
-    <div class="col-span-6 border shadow-xs rounded-xl p-4 md:p-5 bg-white">
-      <dev class="flex justify-end">
-        <button
-          on:click={toggleChart}
-          type="button"
-          class="col-span-1 py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-hidden focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
-        >
-          {showChart ? "Hide Chart" : "Show Chart"}
-        </button>
-      </dev>
+  <Header
+    onSubmit={handleSubmit}
+    dataSourceURL={dataSource.url}
+    intervalSec={dataSource.interval / 1000}
+  />
+  <div class="grid grid-cols-6 gap-4 max-w-7xl mx-auto px-20 py-5">
+    <div class="col-span-2 border shadow-xs rounded-xl p-4 md:p-5 bg-white">
+      <TotalCount title="Status 2xx/3xx" query={query200} {dataSource} />
     </div>
 
     <div class="col-span-2 border shadow-xs rounded-xl p-4 md:p-5 bg-white">
-      <p class="text-xs tracking-wide text-gray-500">Status 2xx/3xx</p>
-      <h3 class="text-xl sm:text-2xl font-medium text-gray-800">
-        <TotalCount prometheusQuery={query200} />
-      </h3>
+      <TotalCount title="Status 4xx" query={query400} {dataSource} />
     </div>
 
     <div class="col-span-2 border shadow-xs rounded-xl p-4 md:p-5 bg-white">
-      <p class="text-xs tracking-wide text-gray-500">Status 4xx</p>
-      <h3 class="text-xl sm:text-2xl font-medium text-gray-800">
-        <TotalCount prometheusQuery={query400} />
-      </h3>
+      <TotalCount title="Status 5xx" query={query500} {dataSource} />
     </div>
 
-    <div class="col-span-2 border shadow-xs rounded-xl p-4 md:p-5 bg-white">
-      <p class="text-xs tracking-wide text-gray-500">Status 5xx</p>
-      <h3 class="text-xl sm:text-2xl font-medium text-gray-800">
-        <TotalCount prometheusQuery={query500} />
-      </h3>
+    <div class="col-span-6 border shadow-xs rounded-xl md:p-5 bg-white">
+      <EchartsLineChart
+        title="Request per second"
+        yAxisName="RPS"
+        query="sum by(method, path, status) (irate(http_client_request_duration_seconds_count[10s]))"
+        {dataSource}
+      />
     </div>
 
-    {#if showChart}
-      <div class="col-span-6 border shadow-xs rounded-xl md:p-5 bg-white">
-        <EchartsLineChart
-          title="Request per second"
-          yAxisName="RPS"
-          prometheusQuery="sum by(method, path, status) (rate(http_client_request_duration_seconds_count[10s]))"
-        />
-      </div>
-
-      <div class="col-span-6 border shadow-xs rounded-xl md:p-5 bg-white">
-        <EchartsLineChart
-          title="Request latency(99 percentile)"
-          yAxisName="Latency"
-          prometheusQuery="histogram_quantile(0.99, sum by (method, path, status, le) (rate(http_client_request_duration_seconds_bucket[10s])))"
-        />
-      </div>
-    {/if}
+    <div class="col-span-6 border shadow-xs rounded-xl md:p-5 bg-white">
+      <EchartsLineChart
+        title="Request latency(99 percentile)"
+        yAxisName="Latency"
+        query="histogram_quantile(0.99, sum by (method, path, status, le) (irate(http_client_request_duration_seconds_bucket[10s])))"
+        {dataSource}
+      />
+    </div>
   </div>
 </main>
 

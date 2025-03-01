@@ -5,7 +5,6 @@ FROM node:22 AS builder
 WORKDIR /app
 
 RUN \
-    --mount=type=bind,source=public,target=public \
     --mount=type=bind,source=src,target=src \
     --mount=type=bind,source=index.html,target=index.html \
     --mount=type=bind,source=package-lock.json,target=package-lock.json \
