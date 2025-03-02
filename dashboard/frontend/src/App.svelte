@@ -8,7 +8,7 @@
   let dataSource = {
     url: baseUrl,
     interval: 1000,
-    enableProxy: false,
+    enableProxy: true,
     baseUrl,
   };
 
@@ -37,7 +37,9 @@
     dataSource = {
       url: baseUrl || urlParams.get("url") || dataSource.url,
       interval,
-      enableProxy: urlParams.get("proxy") === "true",
+      enableProxy:
+        (urlParams.get("proxy") && urlParams.get("proxy") === "true") ||
+        dataSource.enableProxy,
       baseUrl,
     };
   }
