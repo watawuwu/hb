@@ -232,6 +232,6 @@ fn create_metrics(req: &Request) -> Metrics {
         response_size_bytes,
         error_total,
         req.method.as_ref().to_string(),
-        req.url.to_string(),
+        req.url.path().to_string(),
     )
 }
