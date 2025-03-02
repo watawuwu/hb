@@ -23,7 +23,7 @@ async fn main() -> Result<()> {
     let serve_dir = ServeDir::new(&args.dist_path);
 
     let client = reqwest::Client::new();
-    let app_state = AppState::new(client, args.proxy_url.clone());
+    let app_state = AppState::new(client, args.datasource_url.clone());
 
     let handle = axum_server::Handle::new();
     let shutdown_signal = shutdown_signal(handle.clone());

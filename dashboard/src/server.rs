@@ -19,14 +19,14 @@ pub struct ProxyQuery {
 #[derive(Debug, Clone)]
 pub struct AppState {
     client: reqwest::Client,
-    proxy_url: Arc<Option<Url>>,
+    datasource_url: Arc<Option<Url>>,
 }
 
 impl AppState {
-    pub fn new(client: reqwest::Client, proxy_url: Option<Url>) -> Self {
+    pub fn new(client: reqwest::Client, datasource_url: Option<Url>) -> Self {
         Self {
             client,
-            proxy_url: Arc::new(proxy_url),
+            datasource_url: Arc::new(datasource_url),
         }
     }
 }
@@ -52,10 +52,10 @@ pub async fn proxy_handler(
 
     let client = state.client.clone();
 
-    if let Some(proxy_url) = state.proxy_url.as_ref() {
-        let proxy_url = proxy_url.clone();
-        if proxy_url.authority() != requested_url.authority() {
-            return (StatusCode::BAD_REQUEST, "Proxy URLs are restricted.").into_response();
+    if let Some(datasource_url) = state.datasource_url.as_ref() {
+        let datasource_url = datasource_url.clone();
+        if datasource_url.authority() != requested_url.authority() {
+            return (StatusCode::BAD_REQUEST, "Datasource URLs are restricted.").into_response();
         }
     }
 
@@ -73,7 +73,7 @@ pub async fn proxy_handler(
 
 #[axum::debug_handler]
 pub async fn config_handler(State(state): State<AppState>) -> impl IntoResponse {
-    let proxy_url = state.proxy_url.as_ref().clone();
+    let datasource_url = state.datasource_url.as_ref().clone();
 
     let js_code = format!(
         r#"
@@ -81,7 +81,9 @@ window.dashboardConfig = {{
   datasourceUrl: "{}",
 }};
 "#,
-        proxy_url.map(|url| url.to_string()).unwrap_or_default()
+        datasource_url
+            .map(|url| url.to_string())
+            .unwrap_or_default()
     );
 
     let response = Response::builder()

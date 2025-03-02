@@ -43,9 +43,9 @@ pub struct Args {
     #[arg(short = 'k', long, env = "HB_DASHBOARD_TLS_KEY_FILE")]
     pub tls_key_path: Option<PathBuf>,
 
-    /// URL to proxy requests to
-    #[arg(short = 'u', long, env = "HB_DASHBOARD_PROXY_URL")]
-    pub proxy_url: Option<Url>,
+    /// URL to datasource URL(Prometheus)
+    #[arg(short = 'u', long, env = "HB_DASHBOARD_DATASOURCE_URL")]
+    pub datasource_url: Option<Url>,
 }
 
 impl Args {
