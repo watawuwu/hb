@@ -3,14 +3,26 @@
   import TotalCount from "./lib/components/TotalCount.svelte";
   import Header from "./lib/components/Header.svelte";
 
+  const baseUrl = (window as any).dashboardConfig?.datasourceUrl || "";
+
   let dataSource = {
-    url: "",
-    interval: 500,
+    url: baseUrl,
+    interval: 1000,
+    enableProxy: false,
+    baseUrl,
   };
-  function handleSubmit(data: { url: string; interval: number }) {
+
+  function handleSubmit(data: {
+    url: string;
+    interval: number;
+    enableProxy: boolean;
+  }) {
+    // Update the dataSource object with the new values
     dataSource = {
-      url: data.url,
+      ...dataSource,
+      url: dataSource.baseUrl || data.url,
       interval: data.interval,
+      enableProxy: data.enableProxy,
     };
   }
 
@@ -23,8 +35,10 @@
       : intervalSec * 1000;
 
     dataSource = {
-      url: urlParams.get("url") || dataSource.url,
+      url: baseUrl || urlParams.get("url") || dataSource.url,
       interval,
+      enableProxy: urlParams.get("proxy") === "true",
+      baseUrl,
     };
   }
 
@@ -41,11 +55,7 @@
 </script>
 
 <main class="bg-gray-50">
-  <Header
-    onSubmit={handleSubmit}
-    dataSourceURL={dataSource.url}
-    intervalSec={dataSource.interval / 1000}
-  />
+  <Header onSubmit={handleSubmit} {dataSource} />
   <div class="grid grid-cols-6 gap-4 max-w-7xl mx-auto px-20 py-5">
     <div class="col-span-2 border shadow-xs rounded-xl p-4 md:p-5 bg-white">
       <TotalCount title="Status 2xx/3xx" query={query200} {dataSource} />

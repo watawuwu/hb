@@ -4,6 +4,7 @@ on:
   push:
     branches:
     - main
+    - 'hb-dashboard/*'
     tags:
     - 'hb-dashboard-*'
     paths:
@@ -88,16 +89,16 @@ jobs:
       id: push
       uses: docker/build-push-action@v6
       with:
-        context: dashboard/simple
+        context: .
         platforms: linux/${{ matrix.arch }}
         push: true
         tags: ${{ steps.add-meta.outputs.tags }}
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
-        file: dashboard/simple/Dockerfile
+        file: dashboard/Dockerfile
         labels: ${{ steps.meta.outputs.labels }}
         build-args: |
-          APP_NAME=hb
+          APP_NAME=${{ env.NAME }}
 
     - name: Update caches
       run: |

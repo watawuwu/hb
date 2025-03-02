@@ -1,6 +1,6 @@
 [workspace]
 
-members = ["controller", "client", "devops"]
+members = ["controller", "client", "devops", "dashboard"]
 resolver = "2"
 
 [workspace.package]

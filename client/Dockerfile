@@ -14,6 +14,8 @@ RUN --mount=type=bind,source=Cargo.toml,target=Cargo.toml \
     --mount=type=bind,source=controller/Cargo.toml,target=controller/Cargo.toml \
     --mount=type=bind,source=devops/src,target=devops/src \
     --mount=type=bind,source=devops/Cargo.toml,target=devops/Cargo.toml \
+    --mount=type=bind,source=dashboard/src,target=dashboard/src \
+    --mount=type=bind,source=dashboard/Cargo.toml,target=dashboard/Cargo.toml \
     --mount=type=cache,target=/app/target/ \
     --mount=type=cache,target=/usr/local/cargo/registry/ \
     <<EOF
