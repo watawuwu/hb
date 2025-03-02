@@ -31,6 +31,16 @@ fn command_exists(cmd: &str) -> bool {
             }
         }
     }
+    node_modules_exists(cmd)
+}
+
+fn node_modules_exists(cmd: &str) -> bool {
+    if let Ok(workspace_dir) = env::current_dir() {
+        let path = Path::new(&workspace_dir).join("frontend/node_modules/.bin");
+        let full_path = path.join(cmd);
+        return full_path.exists();
+    }
+
     false
 }
 
