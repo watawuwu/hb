@@ -1,8 +1,0 @@
-perses:
-  testFramework:
-    enabled: false
-  sidecar:
-    enabled: true
-  image:
-    name: persesdev/perses
-    version: latest
