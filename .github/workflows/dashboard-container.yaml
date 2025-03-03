@@ -8,7 +8,7 @@ on:
     tags:
     - 'hb-dashboard-*'
     paths:
-    - 'dashboard/simple/*'
+    - 'dashboard/*'
     - '.github/workflows/dashboard-container.yaml'
 
 env:
