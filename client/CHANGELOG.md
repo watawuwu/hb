@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file.
 
+## [hb-v0.6.4] - 2025-03-03
+
+### 🚀 Features
+
+- Add local development observability stack with Docker Compose
+- Add DevOps HTTP test server for resilience testing
+- Impl web server
+
+### 🐛 Bug Fixes
+
+- Use URL path instead of full URL in metrics label
+
+### ⚙️ Miscellaneous Tasks
+
+- Fix cargo build srouces
+
 ## [hb-v0.6.3] - 2025-02-23
 
 ### 🐛 Bug Fixes
