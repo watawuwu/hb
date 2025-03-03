@@ -1,5 +1,5 @@
 [package]
-name = "devops"
+name = "hb-devops"
 version = "0.1.0"
 authors.workspace = true
 readme.workspace = true
