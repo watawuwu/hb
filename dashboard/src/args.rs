@@ -93,4 +93,77 @@ mod tests {
         use clap::CommandFactory;
         Args::command().debug_assert();
     }
+
+    #[test]
+    fn test_default_values() {
+        let args = Args::try_parse_from(["test"]);
+        assert!(args.is_ok());
+        let args = args.unwrap();
+        assert_eq!(args.host, "0.0.0.0");
+        assert_eq!(args.dist_path, PathBuf::from("frontend/dist"));
+        assert!(args.port.is_none());
+        assert!(args.tls_cert_path.is_none());
+        assert!(args.tls_key_path.is_none());
+        assert!(args.datasource_url.is_none());
+    }
+
+    #[test]
+    fn test_custom_values() {
+        let args = Args::try_parse_from([
+            "test",
+            "-p",
+            "9090",
+            "-H",
+            "127.0.0.1",
+            "-d",
+            "/path/to/dist",
+            "-u",
+            "http://localhost:9090",
+        ]);
+        assert!(args.is_ok());
+        let args = args.unwrap();
+        assert_eq!(args.port, Some(9090));
+        assert_eq!(args.host, "127.0.0.1");
+        assert_eq!(args.dist_path, PathBuf::from("/path/to/dist"));
+        assert_eq!(
+            args.datasource_url,
+            Some(Url::parse("http://localhost:9090").unwrap())
+        );
+    }
+
+    #[tokio::test]
+    async fn test_socket_addr_default() {
+        let args = Args::try_parse_from(["test"]).unwrap();
+        let addr = args.socket_addr().unwrap();
+        assert_eq!(addr.port(), DEFAULT_PORT);
+        assert_eq!(addr.ip().to_string(), "0.0.0.0");
+    }
+
+    #[tokio::test]
+    async fn test_socket_addr_with_tls() {
+        let args = Args::try_parse_from(["test", "-c", "cert.pem", "-k", "key.pem"]).unwrap();
+        let addr = args.socket_addr().unwrap();
+        assert_eq!(addr.port(), DEFAULT_TLS_PORT);
+    }
+
+    #[tokio::test]
+    async fn test_socket_addr_with_custom_port() {
+        let args = Args::try_parse_from(["test", "-p", "9090"]).unwrap();
+        let addr = args.socket_addr().unwrap();
+        assert_eq!(addr.port(), 9090);
+    }
+
+    #[test]
+    fn test_invalid_host() {
+        let args = Args::try_parse_from(["test", "-H", "invalid-host"]);
+        assert!(args.is_ok());
+        let args = args.unwrap();
+        assert!(args.socket_addr().is_err());
+    }
+
+    #[test]
+    fn test_invalid_url() {
+        let args = Args::try_parse_from(["test", "-u", "invalid-url"]);
+        assert!(args.is_err());
+    }
 }
