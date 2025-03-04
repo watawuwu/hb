@@ -6,7 +6,7 @@ resolver = "2"
 [workspace.package]
 authors = ["Wataru Matsui <watawuwu@3bi.tech>"]
 readme = "README.md"
-edition = "2021"
+edition = "2024"
 license = "MIT OR Apache-2.0"
 description = "HTTP Benchmark Tool"
 repository = "https://github.com/watawuwu/hb"
