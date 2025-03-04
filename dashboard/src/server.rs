@@ -8,7 +8,6 @@ use serde::Deserialize;
 use std::sync::Arc;
 use std::time::Duration;
 use tokio::signal;
-use tracing::debug;
 use url::Url;
 
 #[derive(Debug, Deserialize)]
@@ -35,43 +34,52 @@ pub async fn proxy_handler(
     State(state): State<AppState>,
     Query(params): Query<ProxyQuery>,
 ) -> impl IntoResponse {
-    // Decode the URL parameter
-    let decoded_url = match percent_decode_str(&params.url).decode_utf8() {
-        Ok(s) => s.to_string(),
-        Err(_) => return (StatusCode::BAD_REQUEST, "Invalid URL encoding").into_response(),
-    };
-
-    debug!("decoded_url: {}", decoded_url);
-
-    let requested_url = match parse_url(&decoded_url) {
+    let requested_url = match decode_and_parse_url(&params.url) {
         Ok(url) => url,
-        Err(_) => return (StatusCode::BAD_REQUEST, "Invalid URL").into_response(),
+        Err(err_msg) => return (StatusCode::BAD_REQUEST, err_msg).into_response(),
     };
 
-    debug!("requested_url: {}", requested_url);
-
-    let client = state.client.clone();
-
-    if let Some(datasource_url) = state.datasource_url.as_ref() {
-        let datasource_url = datasource_url.clone();
-        if datasource_url.authority() != requested_url.authority() {
-            return (StatusCode::BAD_REQUEST, "Datasource URLs are restricted.").into_response();
-        }
+    if !validate_datasource_url(&state, &requested_url) {
+        return (StatusCode::BAD_REQUEST, "Datasource URLs are restricted.").into_response();
     }
 
-    let response = match client.get(requested_url).send().await {
-        Ok(resp) => resp,
-        Err(_) => return (StatusCode::BAD_GATEWAY, "Failed to send request").into_response(),
-    };
-
-    // Get the response body and return it
-    match response.text().await {
+    match send_request(&state.client, requested_url).await {
         Ok(body) => body.into_response(),
-        Err(_) => (StatusCode::BAD_GATEWAY, "Failed to read response body").into_response(),
+        Err(err_msg) => (StatusCode::BAD_GATEWAY, err_msg).into_response(),
     }
 }
 
-#[axum::debug_handler]
+fn decode_and_parse_url(url: &str) -> Result<Url, &'static str> {
+    let decoded_url = percent_decode_str(url).decode_utf8().map_err(|e| {
+        tracing::debug!("Invalid URL encoding: {}", e);
+        "Invalid URL encoding"
+    })?;
+    parse_url(&decoded_url).map_err(|e| {
+        tracing::debug!("Invalid URL: {}", e);
+        "Invalid URL"
+    })
+}
+
+fn validate_datasource_url(state: &AppState, requested_url: &Url) -> bool {
+    if let Some(datasource_url) = state.datasource_url.as_ref() {
+        if datasource_url.authority() != requested_url.authority() {
+            return false;
+        }
+    }
+    true
+}
+
+async fn send_request(client: &reqwest::Client, url: Url) -> Result<String, &'static str> {
+    let response = client.get(url).send().await.map_err(|e| {
+        tracing::debug!("Failed to send request error: {}", e);
+        "Failed to send request"
+    })?;
+    response.text().await.map_err(|e| {
+        tracing::debug!("Failed to read response error: {}", e);
+        "Failed to read response body"
+    })
+}
+
 pub async fn config_handler(State(state): State<AppState>) -> impl IntoResponse {
     let datasource_url = state.datasource_url.as_ref().clone();
 
