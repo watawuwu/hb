@@ -1,9 +1,9 @@
+use crate::reporter::ExecMode;
 use crate::reporter::components::Reporter;
 use crate::reporter::formatter::OutputFormat;
 use crate::reporter::metrics::{
     ErrorMetrics, RequestDurationSecondsMetrics, ResponseSizeBytesMetrics, StartTimeMetrics,
 };
-use crate::reporter::ExecMode;
 use crate::time::now_ts;
 use anyhow::Result;
 use async_trait::async_trait;
@@ -16,10 +16,10 @@ use crossterm::{
 };
 use opentelemetry_sdk::error::{OTelSdkError, OTelSdkResult};
 use opentelemetry_sdk::metrics::{
-    data::ResourceMetrics, exporter::PushMetricExporter, Temporality,
+    Temporality, data::ResourceMetrics, exporter::PushMetricExporter,
 };
-use std::io::stdout;
 use std::io::Write;
+use std::io::stdout;
 use std::sync::atomic::{AtomicU64, Ordering::Relaxed};
 use std::sync::{Arc, Mutex};
 

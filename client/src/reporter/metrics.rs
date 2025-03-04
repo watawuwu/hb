@@ -239,11 +239,7 @@ impl ResponseSizeBytesMetrics {
 
     pub(crate) fn mean(&self) -> u64 {
         let cnt = self.count();
-        if cnt > 0 {
-            self.sum() / cnt
-        } else {
-            0
-        }
+        if cnt > 0 { self.sum() / cnt } else { 0 }
     }
 }
 

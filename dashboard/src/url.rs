@@ -1,5 +1,5 @@
 use anyhow::Result;
-use percent_encoding::{utf8_percent_encode, NON_ALPHANUMERIC};
+use percent_encoding::{NON_ALPHANUMERIC, utf8_percent_encode};
 use url::Url;
 
 pub fn parse_url(url_str: &str) -> Result<Url> {

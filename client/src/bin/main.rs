@@ -6,7 +6,7 @@ use hb::bench;
 use hb::otlp::setup_metrics;
 use tokio::{
     runtime::Builder,
-    signal::unix::{signal, SignalKind},
+    signal::unix::{SignalKind, signal},
 };
 use tokio_util::sync::CancellationToken;
 use tracing::*;

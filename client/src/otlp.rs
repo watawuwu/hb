@@ -1,21 +1,20 @@
 use crate::http::Request;
-use crate::reporter::exporter::StdoutExporter;
-use crate::reporter::formatter::OutputFormat;
 use crate::reporter::ExecMode;
 use crate::reporter::REPORT_INTERVAL;
+use crate::reporter::exporter::StdoutExporter;
+use crate::reporter::formatter::OutputFormat;
 use crate::time::now_ts;
-use anyhow::{bail, Result};
+use anyhow::{Result, bail};
 use clap::ValueEnum;
 use opentelemetry::{
-    global,
+    InstrumentationScope, KeyValue, global,
     metrics::{Counter, Gauge, Histogram},
-    InstrumentationScope, KeyValue,
 };
 use opentelemetry_otlp::{MetricExporter, Protocol, WithExportConfig};
 use opentelemetry_sdk::runtime;
 use opentelemetry_sdk::{
-    metrics::{periodic_reader_with_async_runtime::PeriodicReader, SdkMeterProvider},
     Resource,
+    metrics::{SdkMeterProvider, periodic_reader_with_async_runtime::PeriodicReader},
 };
 use std::time::Duration;
 use tracing::*;

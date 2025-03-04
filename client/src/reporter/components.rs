@@ -1,8 +1,8 @@
+use crate::reporter::ExecMode;
 use crate::reporter::formatter::{format_dynamic_precision, format_iec, format_percent};
 use crate::reporter::metrics::{
     ErrorMetrics, RequestDurationSecondsMetrics, ResponseSizeBytesMetrics, StartTimeMetrics,
 };
-use crate::reporter::ExecMode;
 use anyhow::Result;
 use serde::Serialize;
 use tabled::settings::object::{Cell, Rows};

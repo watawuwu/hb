@@ -4,9 +4,9 @@ mod url;
 
 use anyhow::Result;
 use args::Args;
-use axum::{routing::get, Router};
+use axum::{Router, routing::get};
 use clap::Parser;
-use server::{config_handler, proxy_handler, shutdown_signal, AppState};
+use server::{AppState, config_handler, proxy_handler, shutdown_signal};
 use tower_http::services::ServeDir;
 use tracing::*;
 

@@ -1,5 +1,5 @@
-use anyhow::{bail, Result};
-use clap::builder::{styling, Styles};
+use anyhow::{Result, bail};
+use clap::builder::{Styles, styling};
 use clap::error::ErrorKind;
 use clap::{CommandFactory, Parser};
 use hb::bench::BenchOption;
@@ -442,10 +442,11 @@ mod tests {
         ];
         let err = Args::parse_wrapper_from(args);
         assert!(err.is_err());
-        assert!(err
-            .unwrap_err()
-            .to_string()
-            .contains("RPS must be greater than or equal to the number of clients"));
+        assert!(
+            err.unwrap_err()
+                .to_string()
+                .contains("RPS must be greater than or equal to the number of clients")
+        );
     }
 
     #[test]
@@ -460,10 +461,11 @@ mod tests {
         ];
         let err = Args::parse_wrapper_from(args);
         assert!(err.is_err());
-        assert!(err
-            .unwrap_err()
-            .to_string()
-            .contains("Number of clients must be greater than or equal to the number of requests"));
+        assert!(
+            err.unwrap_err().to_string().contains(
+                "Number of clients must be greater than or equal to the number of requests"
+            )
+        );
     }
 
     #[test]
@@ -477,10 +479,11 @@ mod tests {
         ];
         let err = Args::parse_wrapper_from(args);
         assert!(err.is_err());
-        assert!(err
-            .unwrap_err()
-            .to_string()
-            .contains("HTTP/2 does not support keepalive"));
+        assert!(
+            err.unwrap_err()
+                .to_string()
+                .contains("HTTP/2 does not support keepalive")
+        );
     }
 
     #[test]

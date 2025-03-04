@@ -1,6 +1,6 @@
 use crate::http::{Client, Request};
 use crate::otlp::Metrics;
-use anyhow::{bail, Result};
+use anyhow::{Result, bail};
 use std::future::Future;
 use std::pin::Pin;
 use std::sync::Arc;

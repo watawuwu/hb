@@ -1,7 +1,7 @@
 use anyhow::Result;
 use axum_server::tls_rustls::RustlsConfig;
-use clap::builder::{styling, Styles};
 use clap::Parser;
+use clap::builder::{Styles, styling};
 use std::fmt::Debug;
 use std::net::{Ipv4Addr, SocketAddr};
 use std::path::PathBuf;
