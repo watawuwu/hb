@@ -12,3 +12,8 @@ delete-cluster:
 
 http-server:
     cargo run --release --bin test-server
+
+dev-dashboard:
+    docker compose up -d prometheus
+    just http-server
+
