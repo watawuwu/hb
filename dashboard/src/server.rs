@@ -39,7 +39,7 @@ pub async fn proxy_handler(
         Err(err_msg) => return (StatusCode::BAD_REQUEST, err_msg).into_response(),
     };
 
-    if !validate_datasource_url(&state, &requested_url) {
+    if !validate_datasource_url(state.datasource_url.as_ref().as_ref(), &requested_url) {
         return (StatusCode::BAD_REQUEST, "Datasource URLs are restricted.").into_response();
     }
 
@@ -60,9 +60,9 @@ fn decode_and_parse_url(url: &str) -> Result<Url, &'static str> {
     })
 }
 
-fn validate_datasource_url(state: &AppState, requested_url: &Url) -> bool {
-    if let Some(datasource_url) = state.datasource_url.as_ref() {
-        if datasource_url.authority() != requested_url.authority() {
+fn validate_datasource_url(datasource_url: Option<&Url>, requested_url: &Url) -> bool {
+    if let Some(url) = datasource_url {
+        if url.authority() != requested_url.authority() {
             return false;
         }
     }
@@ -125,4 +125,136 @@ pub async fn shutdown_signal(handle: axum_server::Handle) {
     tracing::info!("Received termination signal shutting down");
     // 10 secs is how long docker will wait to force shutdown
     handle.graceful_shutdown(Some(Duration::from_secs(10)));
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use anyhow::Result;
+    use http_body_util::BodyExt;
+    use mockito::Server;
+    use reqwest::Client;
+    use url::Url;
+
+    #[tokio::test]
+    async fn test_decode_and_parse_url_valid() {
+        let url = "http%3A%2F%2Fexample.com";
+        let result = decode_and_parse_url(url);
+        assert!(result.is_ok());
+    }
+
+    #[tokio::test]
+    async fn test_decode_and_parse_url_invalid() {
+        let url = "%E0%A4%A"; // Invalid percent encoding
+        let result = decode_and_parse_url(url);
+        assert!(result.is_err());
+    }
+
+    #[tokio::test]
+    async fn test_validate_datasource_url() {
+        let datasource_url = Some(Url::parse("http://example.com").unwrap());
+        let requested_url = Url::parse("http://example.com").unwrap();
+        assert!(validate_datasource_url(
+            datasource_url.as_ref(),
+            &requested_url
+        ));
+    }
+
+    #[tokio::test]
+    async fn test_proxy_handler_valid_url() -> Result<()> {
+        let mut server = Server::new_async().await;
+        let mock = server
+            .mock("GET", "/")
+            .with_status(200)
+            .with_body("Hello, world!")
+            .create_async()
+            .await;
+
+        let client = Client::new();
+        let datasource_url = Some(Url::parse(&server.url())?);
+        let state = AppState::new(client, datasource_url);
+        let params = ProxyQuery { url: server.url() };
+
+        let response = proxy_handler(State(state), Query(params))
+            .await
+            .into_response();
+        assert_eq!(response.status(), StatusCode::OK);
+        mock.assert_async().await;
+
+        Ok(())
+    }
+
+    #[tokio::test]
+    async fn test_proxy_handler_empty_url() -> Result<()> {
+        let mut server = Server::new_async().await;
+        let mock = server
+            .mock("GET", "/")
+            .with_status(200)
+            .with_body("Hello, world!")
+            .create_async()
+            .await;
+
+        let client = Client::new();
+        let state = AppState::new(client, None);
+        let params = ProxyQuery { url: server.url() };
+
+        let response = proxy_handler(State(state), Query(params))
+            .await
+            .into_response();
+        assert_eq!(response.status(), StatusCode::OK);
+        mock.assert_async().await;
+
+        Ok(())
+    }
+
+    #[tokio::test]
+    async fn test_proxy_handler_invalid_url() -> Result<()> {
+        let client = Client::new();
+        let state = AppState::new(client, None);
+        let params = ProxyQuery {
+            url: "invalid-url".to_string(),
+        };
+
+        let response = proxy_handler(State(state), Query(params))
+            .await
+            .into_response();
+        assert_eq!(response.status(), StatusCode::BAD_REQUEST);
+
+        Ok(())
+    }
+
+    #[tokio::test]
+    async fn test_proxy_handler_restricted_datasource_url() -> Result<()> {
+        let client = Client::new();
+        let state = AppState::new(client, Some(Url::parse("http://restricted.example.com")?));
+        let params = ProxyQuery {
+            url: "http://www.example.com".to_string(),
+        };
+
+        let response = proxy_handler(State(state), Query(params))
+            .await
+            .into_response();
+        assert_eq!(response.status(), StatusCode::BAD_REQUEST);
+
+        Ok(())
+    }
+
+    #[tokio::test]
+    async fn test_config_handler() -> Result<()> {
+        let client = Client::new();
+        let datasource_url = Some(Url::parse("http://example.com")?);
+        let state = AppState::new(client, datasource_url);
+
+        let response = config_handler(State(state)).await.into_response();
+        assert_eq!(response.status(), StatusCode::OK);
+
+        let body = response.into_body();
+        let bytes = body.collect().await?.to_bytes();
+        let body_str = std::str::from_utf8(&bytes)?;
+
+        assert!(body_str.contains(r#"window.dashboardConfig"#));
+        assert!(body_str.contains(r#"datasourceUrl: "http://example.com/""#));
+
+        Ok(())
+    }
 }
