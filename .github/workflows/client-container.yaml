@@ -6,7 +6,7 @@ on:
     - main
     - 'hb/*'
     tags:
-    - 'hb-*'
+    - 'hb-v*'
     paths:
     - 'client/**'
     - '.github/workflows/client-container.yaml'

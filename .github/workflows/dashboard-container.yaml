@@ -6,7 +6,7 @@ on:
     - main
     - 'hb-dashboard/*'
     tags:
-    - 'hb-dashboard-*'
+    - 'hb-dashboard-v*'
     paths:
     - 'dashboard/*'
     - '.github/workflows/dashboard-container.yaml'
