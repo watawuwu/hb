@@ -20,6 +20,8 @@ publish-jobs = ["homebrew"]
 # Whether to install an updater program
 install-updater = false
 
+github-build-setup = "../custom-release-steps.yaml"
+
 [dist.github-custom-runners]
 aarch64-apple-darwin = "macos-15"
 aarch64-unknown-linux-gnu = "ubuntu-24.04-arm"

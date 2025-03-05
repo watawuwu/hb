@@ -1,0 +1,2 @@
+- name: Update toolchain
+  run: rustup update
