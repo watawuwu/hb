@@ -1,38 +1,19 @@
 <script lang="ts">
-  export let onSubmit: (dataSource: {
-    url: string;
-    interval: number;
-    enableProxy: boolean;
-  }) => void;
+  export let onSubmit: (dataSource: { interval: number }) => void;
 
   export let dataSource: {
     url: string;
     interval: number;
-    enableProxy: boolean;
-    baseUrl: string;
   };
 
   let dataSourceUrl = dataSource.url;
   let intervalSec = dataSource.interval / 1000;
-  let enableProxy = dataSource.enableProxy;
-
-  let dataSourceUrlReadOnly = false;
-  if (dataSource.baseUrl) {
-    dataSourceUrlReadOnly = true;
-  }
-
-  let dataSourceUrlTitle = "Prometheus URL";
-  if (dataSourceUrlReadOnly) {
-    dataSourceUrlTitle = "Restricted by server";
-  }
 
   function handleSubmit(event: Event) {
     event.preventDefault();
 
     onSubmit({
-      url: dataSourceUrl,
       interval: intervalSec * 1000,
-      enableProxy,
     });
   }
 </script>
@@ -46,20 +27,6 @@
     <div class="flex items-center justify-end ms-auto gap-x-1 md:gap-x-3">
       <form on:submit={handleSubmit} class="max-auto w-full max-w-xl">
         <div class="mx-auto sm:flex sm:space-x-3 bg-white justify-end">
-          <div class="flex items-center">
-            <input
-              type="checkbox"
-              id="enable-proxy"
-              class="rounded text-pink-500"
-              bind:checked={enableProxy}
-            />
-            <label
-              for="enable-proxy"
-              class="text-sm text-gray-500 ms-3 dark:text-neutral-400"
-              >Proxy</label
-            >
-          </div>
-
           <div class="relative w-full max-w-md">
             <label
               for="datasource-url"
@@ -70,10 +37,9 @@
               <input
                 type="text"
                 id="datasource-url"
-                placeholder="Enter your Prometheus URL"
                 class="border border-gray-300 focus:outline-blue-400 rounded w-full h-10 p-3 pt-5 text-sm w-xs read-only:bg-gray-100 read-only:text-gray-400 read-only:cursor-not-allowed"
-                title={dataSourceUrlTitle}
-                disabled={dataSourceUrlReadOnly}
+                title="Restricted by server; can be set with the HB_DASHBOARD_DATASOURCE_URL environment variable or with the --datasource-url argument"
+                disabled={true}
                 bind:value={dataSourceUrl}
               />
             </div>

@@ -3,50 +3,20 @@
   import TotalCount from "./lib/components/TotalCount.svelte";
   import Header from "./lib/components/Header.svelte";
 
-  const baseUrl = (window as any).dashboardConfig?.datasourceUrl || "";
+  const url = (window as any).dashboardConfig?.datasourceUrl || "";
 
   let dataSource = {
-    url: baseUrl,
+    url,
     interval: 1000,
-    enableProxy: true,
-    baseUrl,
   };
 
-  function handleSubmit(data: {
-    url: string;
-    interval: number;
-    enableProxy: boolean;
-  }) {
+  function handleSubmit(data: { interval: number }) {
     // Update the dataSource object with the new values
     dataSource = {
       ...dataSource,
-      url: dataSource.baseUrl || data.url,
       interval: data.interval,
-      enableProxy: data.enableProxy,
     };
   }
-
-  // Get URL query parameters
-  function getParams() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const intervalSec = parseFloat(urlParams.get("interval"));
-    const interval = isNaN(intervalSec)
-      ? dataSource.interval
-      : intervalSec * 1000;
-
-    dataSource = {
-      url: baseUrl || urlParams.get("url") || dataSource.url,
-      interval,
-      enableProxy:
-        (urlParams.get("proxy") && urlParams.get("proxy") === "true") ||
-        dataSource.enableProxy,
-      baseUrl,
-    };
-  }
-
-  // Update when URL is changed
-  window.addEventListener("popstate", getParams);
-  getParams();
 
   let query200 =
     'sum(http_client_request_duration_seconds_count{"status"=~"2.+|3.+"})';

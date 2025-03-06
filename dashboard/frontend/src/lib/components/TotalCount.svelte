@@ -1,13 +1,12 @@
 <script lang="ts">
-  import { query as promQuery, type DataItem } from "../prometheus";
-  import { onMount, onDestroy } from "svelte";
+  import { query as promQuery } from "../prometheus";
+  import { onDestroy } from "svelte";
 
   export let title: string;
   export let query: string;
   export let dataSource: {
     url: string;
     interval: number;
-    enableProxy: boolean;
   };
 
   let value: number;
@@ -18,14 +17,11 @@
       if (intervalId) {
         clearInterval(intervalId);
       }
-      intervalId = setInterval(
-        fetchData(dataSource.enableProxy),
-        dataSource.interval
-      );
+      intervalId = setInterval(fetchData(), dataSource.interval);
     }
   }
 
-  function fetchData(proxy: boolean): () => void {
+  function fetchData(): () => void {
     return async () => {
       try {
         if (
@@ -35,7 +31,7 @@
         ) {
           return;
         }
-        const items = await promQuery(query, dataSource.url, proxy);
+        const items = await promQuery(query, dataSource.url);
         if (items !== undefined && items.length > 0) {
           const data = items[0];
           value = data.sample[1];

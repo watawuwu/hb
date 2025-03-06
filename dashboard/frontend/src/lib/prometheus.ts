@@ -4,17 +4,11 @@ export interface DataItem {
     sample: [Date, number];
 }
 
-export async function query(query: string, origin: string, proxy: boolean): Promise<DataItem[] | undefined> {
+export async function query(query: string, origin: string): Promise<DataItem[] | undefined> {
 
-  let url = "";
-  if (proxy) {
-    const originUrl = `${origin}/api/v1/query?query=${query}`;
-    const encodedQuery = encodeURIComponent(originUrl);
-    url = `proxy?url=${encodedQuery}`;
-  } else {
-    const encodedQuery = encodeURIComponent(query);
-    url = `${origin}/api/v1/query?query=${encodedQuery}`;
-  }
+  const originUrl = `${origin}/api/v1/query?query=${query}`;
+  const encodedQuery = encodeURIComponent(originUrl);
+  const url = `proxy?url=${encodedQuery}`;
 
   const response = await fetch(url);
   const result = await response.json();

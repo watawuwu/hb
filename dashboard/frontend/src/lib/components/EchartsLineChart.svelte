@@ -14,7 +14,6 @@
   export let dataSource: {
     url: string;
     interval: number;
-    enableProxy: boolean;
   };
 
   type EChartsOption = echarts.EChartsOption;
@@ -110,11 +109,7 @@
       ) {
         return;
       }
-      let items = await promQuery(
-        query,
-        dataSource.url,
-        dataSource.enableProxy
-      );
+      let items = await promQuery(query, dataSource.url);
 
       let range = displayTimeRange();
 
