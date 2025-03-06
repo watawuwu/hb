@@ -73,16 +73,41 @@
             </div>
           </div>
 
-          <div class="whitespace-nowrap pt-2 sm:pt-0 grid sm:block">
-            <button
-              class="py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent {isDraw
-                ? 'bg-blue-600 hover:bg-blue-700'
-                : 'bg-gray-400 hover:bg-gray-500'} text-white focus:outline-none"
-              on:click={toggleDraw}
+          <div class="inline-flex items-center gap-2">
+            <label
+              for="switch-component-on"
+              class="text-slate-600 text-sm cursor-pointer">Off</label
             >
-              ON/OFF
-            </button>
+
+            <div class="relative inline-block w-11 h-5">
+              <input
+                id="switch-component-on"
+                type="checkbox"
+                class="peer appearance-none w-11 h-5 bg-slate-100 rounded-full checked:bg-slate-800 cursor-pointer transition-colors duration-300"
+                checked={isDraw}
+                on:change={toggleDraw}
+              />
+              <label
+                for="switch-component-on"
+                class="absolute top-0 left-0 w-5 h-5 bg-white rounded-full border border-slate-300 shadow-sm transition-transform duration-300 peer-checked:translate-x-6 peer-checked:border-slate-800 cursor-pointer"
+              >
+              </label>
+            </div>
+
+            <label
+              for="switch-component-on"
+              class="text-slate-600 text-sm cursor-pointer">On</label
+            >
           </div>
+
+          <!-- <div class="whitespace-nowrap pt-2 sm:pt-0 grid sm:block">
+            <label class="switch">
+              <input type="checkbox" checked={isDraw} on:change={toggleDraw} />
+              <span class="slider round">
+                <span class="slider-label">◎</span>
+              </span>
+            </label>
+          </div> -->
         </div>
       </form>
     </div>
