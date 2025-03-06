@@ -14,6 +14,7 @@
   export let dataSource: {
     url: string;
     interval: number;
+    isDraw: boolean;
   };
 
   type EChartsOption = echarts.EChartsOption;
@@ -194,8 +195,6 @@
       chart = echarts.init(chartContainer);
       chart.setOption(option);
 
-      intervalId = setAsyncInterval(drawChart(chart), dataSource.interval);
-
       window.addEventListener("resize", () => {
         if (chart) {
           chart.resize();
@@ -207,7 +206,7 @@
   onMount(() => {
     initChart();
     return () => {
-      if (intervalId) {
+      if (intervalId !== undefined) {
         clearAsyncInterval(intervalId);
       }
       if (chart) {
@@ -217,16 +216,16 @@
   });
 
   $: {
-    if (dataSource.interval != null && dataSource.interval > 0) {
-      if (intervalId) {
-        clearAsyncInterval(intervalId);
-      }
+    if (intervalId !== undefined) {
+      clearAsyncInterval(intervalId);
+    }
+    if (dataSource.isDraw && dataSource.interval > 0) {
       intervalId = setAsyncInterval(drawChart(chart), dataSource.interval);
     }
   }
 
   onDestroy(() => {
-    if (intervalId) {
+    if (intervalId !== undefined) {
       clearAsyncInterval(intervalId);
     }
     if (chart) {

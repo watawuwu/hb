@@ -7,16 +7,17 @@
   export let dataSource: {
     url: string;
     interval: number;
+    isDraw: boolean;
   };
 
   let value: number;
   let intervalId: number;
 
   $: {
-    if (dataSource.interval != null && dataSource.interval > 0) {
-      if (intervalId) {
-        clearInterval(intervalId);
-      }
+    if (intervalId) {
+      clearInterval(intervalId);
+    }
+    if (dataSource.isDraw && dataSource.interval > 0) {
       intervalId = setInterval(fetchData(), dataSource.interval);
     }
   }

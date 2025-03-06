@@ -8,13 +8,15 @@
   let dataSource = {
     url,
     interval: 1000,
+    isDraw: false,
   };
 
-  function handleSubmit(data: { interval: number }) {
+  function handleSubmit(data: { interval: number; isDraw: boolean }) {
     // Update the dataSource object with the new values
     dataSource = {
       ...dataSource,
       interval: data.interval,
+      isDraw: data.isDraw,
     };
   }
 
