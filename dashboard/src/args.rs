@@ -44,8 +44,13 @@ pub struct Args {
     pub tls_key_path: Option<PathBuf>,
 
     /// URL to datasource URL(Prometheus)
-    #[arg(short = 'u', long, env = "HB_DASHBOARD_DATASOURCE_URL")]
-    pub datasource_url: Option<Url>,
+    #[arg(
+        short = 'u',
+        long,
+        env = "HB_DASHBOARD_DATASOURCE_URL",
+        default_value = "http://localhost:9090"
+    )]
+    pub datasource_url: Url,
 }
 
 impl Args {
@@ -104,7 +109,10 @@ mod tests {
         assert!(args.port.is_none());
         assert!(args.tls_cert_path.is_none());
         assert!(args.tls_key_path.is_none());
-        assert!(args.datasource_url.is_none());
+        assert_eq!(
+            args.datasource_url,
+            Url::parse("http://localhost:9090").unwrap()
+        );
     }
 
     #[test]
@@ -127,7 +135,7 @@ mod tests {
         assert_eq!(args.dist_path, PathBuf::from("/path/to/dist"));
         assert_eq!(
             args.datasource_url,
-            Some(Url::parse("http://localhost:9090").unwrap())
+            Url::parse("http://localhost:9090").unwrap()
         );
     }
 

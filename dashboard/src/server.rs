@@ -18,11 +18,11 @@ pub struct ProxyQuery {
 #[derive(Debug, Clone)]
 pub struct AppState {
     client: reqwest::Client,
-    datasource_url: Arc<Option<Url>>,
+    datasource_url: Arc<Url>,
 }
 
 impl AppState {
-    pub fn new(client: reqwest::Client, datasource_url: Option<Url>) -> Self {
+    pub fn new(client: reqwest::Client, datasource_url: Url) -> Self {
         Self {
             client,
             datasource_url: Arc::new(datasource_url),
@@ -39,7 +39,7 @@ pub async fn proxy_handler(
         Err(err_msg) => return (StatusCode::BAD_REQUEST, err_msg).into_response(),
     };
 
-    if !validate_datasource_url(state.datasource_url.as_ref().as_ref(), &requested_url) {
+    if !validate_datasource_url(state.datasource_url.as_ref(), &requested_url) {
         return (StatusCode::BAD_REQUEST, "Datasource URLs are restricted.").into_response();
     }
 
@@ -60,13 +60,8 @@ fn decode_and_parse_url(url: &str) -> Result<Url, &'static str> {
     })
 }
 
-fn validate_datasource_url(datasource_url: Option<&Url>, requested_url: &Url) -> bool {
-    if let Some(url) = datasource_url {
-        if url.authority() != requested_url.authority() {
-            return false;
-        }
-    }
-    true
+fn validate_datasource_url(datasource_url: &Url, requested_url: &Url) -> bool {
+    datasource_url.authority() == requested_url.authority()
 }
 
 async fn send_request(client: &reqwest::Client, url: Url) -> Result<String, &'static str> {
@@ -90,8 +85,6 @@ window.dashboardConfig = {{
 }};
 "#,
         datasource_url
-            .map(|url| url.to_string())
-            .unwrap_or_default()
     );
 
     let response = Response::builder()
@@ -152,12 +145,9 @@ mod tests {
 
     #[tokio::test]
     async fn test_validate_datasource_url() {
-        let datasource_url = Some(Url::parse("http://example.com").unwrap());
+        let datasource_url = Url::parse("http://example.com").unwrap();
         let requested_url = Url::parse("http://example.com").unwrap();
-        assert!(validate_datasource_url(
-            datasource_url.as_ref(),
-            &requested_url
-        ));
+        assert!(validate_datasource_url(&datasource_url, &requested_url));
     }
 
     #[tokio::test]
@@ -171,31 +161,8 @@ mod tests {
             .await;
 
         let client = Client::new();
-        let datasource_url = Some(Url::parse(&server.url())?);
+        let datasource_url = Url::parse(&server.url())?;
         let state = AppState::new(client, datasource_url);
-        let params = ProxyQuery { url: server.url() };
-
-        let response = proxy_handler(State(state), Query(params))
-            .await
-            .into_response();
-        assert_eq!(response.status(), StatusCode::OK);
-        mock.assert_async().await;
-
-        Ok(())
-    }
-
-    #[tokio::test]
-    async fn test_proxy_handler_empty_url() -> Result<()> {
-        let mut server = Server::new_async().await;
-        let mock = server
-            .mock("GET", "/")
-            .with_status(200)
-            .with_body("Hello, world!")
-            .create_async()
-            .await;
-
-        let client = Client::new();
-        let state = AppState::new(client, None);
         let params = ProxyQuery { url: server.url() };
 
         let response = proxy_handler(State(state), Query(params))
@@ -210,7 +177,8 @@ mod tests {
     #[tokio::test]
     async fn test_proxy_handler_invalid_url() -> Result<()> {
         let client = Client::new();
-        let state = AppState::new(client, None);
+        let datasource_url = Url::parse("http://example.com").unwrap();
+        let state = AppState::new(client, datasource_url);
         let params = ProxyQuery {
             url: "invalid-url".to_string(),
         };
@@ -226,7 +194,8 @@ mod tests {
     #[tokio::test]
     async fn test_proxy_handler_restricted_datasource_url() -> Result<()> {
         let client = Client::new();
-        let state = AppState::new(client, Some(Url::parse("http://restricted.example.com")?));
+        let datasource_url = Url::parse("http://restricted.example.com")?;
+        let state = AppState::new(client, datasource_url);
         let params = ProxyQuery {
             url: "http://www.example.com".to_string(),
         };
@@ -242,7 +211,7 @@ mod tests {
     #[tokio::test]
     async fn test_config_handler() -> Result<()> {
         let client = Client::new();
-        let datasource_url = Some(Url::parse("http://example.com")?);
+        let datasource_url = Url::parse("http://example.com")?;
         let state = AppState::new(client, datasource_url);
 
         let response = config_handler(State(state)).await.into_response();
