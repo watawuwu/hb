@@ -50,3 +50,10 @@ jobs:
     - name: Test
       run: cargo test --target=${{ matrix.target }}
 
+    - name: Install cargo-binstall
+      uses: cargo-bins/cargo-binstall@main
+
+    - name: Check licenses
+      run: |
+        cargo binstall cargo-deny
+        cargo deny check licenses bans sources

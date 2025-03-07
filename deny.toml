@@ -96,6 +96,7 @@ allow = [
     "BSD-2-Clause",
     "ISC",
     "Zlib",
+    "OpenSSL",
     # No modifications, no problems with OSS.
     "MPL-2.0",
 ] # List of explicitly allowed licenses
