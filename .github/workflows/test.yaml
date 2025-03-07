@@ -55,5 +55,5 @@ jobs:
 
     - name: Check licenses
       run: |
-        cargo binstall cargo-deny
+        cargo binstall -y cargo-deny
         cargo deny check licenses bans sources
