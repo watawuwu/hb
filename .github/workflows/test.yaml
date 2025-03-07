@@ -4,6 +4,21 @@ on:
   push:
 
 jobs:
+  license:
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Setup code
+      uses: actions/checkout@v4
+
+    - name: Install cargo-binstall
+      uses: cargo-bins/cargo-binstall@main
+
+    - name: Check licenses
+      run: |
+        cargo binstall -y cargo-deny
+        cargo deny check licenses bans sources
+
   test:
     strategy:
       fail-fast: false
@@ -49,11 +64,3 @@ jobs:
 
     - name: Test
       run: cargo test --target=${{ matrix.target }}
-
-    - name: Install cargo-binstall
-      uses: cargo-bins/cargo-binstall@main
-
-    - name: Check licenses
-      run: |
-        cargo binstall -y cargo-deny
-        cargo deny check licenses bans sources
