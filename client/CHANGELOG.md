@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [hb-v0.6.4] - 2025-03-03
+## [0.6.4] - 2025-03-03
 
 ### 🚀 Features
 
@@ -18,7 +18,7 @@ All notable changes to this project will be documented in this file.
 
 - Fix cargo build srouces
 
-## [hb-v0.6.3] - 2025-02-23
+## [0.6.3] - 2025-02-23
 
 ### 🐛 Bug Fixes
 
@@ -34,19 +34,19 @@ All notable changes to this project will be documented in this file.
 
 - Add multi-arch support for container builds
 
-## [hb-v0.6.2] - 2025-02-22
+## [0.6.2] - 2025-02-22
 
 ### ⚙️ Miscellaneous Tasks
 
 - Update container workflow tag matching patterns
 
-## [hb-v0.6.1] - 2025-02-22
+## [0.6.1] - 2025-02-22
 
 ### ⚙️ Miscellaneous Tasks
 
 - Update container workflow tag trigger and versioning
 
-## [hb-v0.6.0] - 2025-02-22
+## [0.6.0] - 2025-02-22
 
 ### 🐛 Bug Fixes
 
@@ -61,13 +61,13 @@ All notable changes to this project will be documented in this file.
 - Configure git-cliff changelog generation settings
 - Fix container workflow tag trigger pattern
 
-## [hb-v0.5.0] - 2025-02-22
+## [0.5.0] - 2025-02-22
 
 ### 📚 Documentation
 
 - Move CHANGELOG.md for client
 
-## [hb-v0.4.0] - 2025-02-21
+## [0.4.0] - 2025-02-21
 
 ### 🚜 Refactor
 
@@ -80,7 +80,7 @@ All notable changes to this project will be documented in this file.
 - Fix Docker platform selection condition
 - Release
 
-## [hb-v0.3.0] - 2025-02-21
+## [0.3.0] - 2025-02-21
 
 ### ⚙️ Miscellaneous Tasks
 
@@ -89,7 +89,7 @@ All notable changes to this project will be documented in this file.
 - Update release commands to prevent publishing
 - Release
 
-## [hb-v0.1.0] - 2025-02-20
+## [0.1.0] - 2025-02-20
 
 ### 🚀 Features
 

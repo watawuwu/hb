@@ -35,7 +35,7 @@ pre-release-hook = [
     # Creating changelog from unreleased data before tag creation
     "--unreleased",
     "--tag",
-    "{{tag_name}}",
+    "{{version}}",
     "--prepend",
     "CHANGELOG.md",
 ]
