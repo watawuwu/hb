@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.4] - 2025-03-08
+
+### 📚 Documentation
+
+- Update dashboard README with improved security and usage instructions
+
+### ⚙️ Miscellaneous Tasks
+
+- Add explicit description for dashboard package
+- Update changelog and configuration files for release
+
 ## [0.1.3] - 2025-03-08
 
 ### 🚀 Features
