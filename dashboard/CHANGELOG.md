@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [hb-dashboard-v0.1.3] - 2025-03-08
+
+### 🚀 Features
+
+- Add chart drawing toggle functionality to dashboard
+
+### 🚜 Refactor
+
+- Simplify datasource URL handling in dashboard server
+- Remove proxy and URL configuration options from dashboard frontend
+- Improve chart drawing toggle with toggle switch UI
+
 ## [hb-dashboard-v0.1.1] - 2025-03-05
 
 ### 🚜 Refactor
